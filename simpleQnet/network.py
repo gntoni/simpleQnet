@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 class qNet(object):
     def __init__(self, nActions):
-        self._target_var = T.matrix('targets')
+        self._target_var = T.matrix('targets',dtype=theano.config.floatX)
         self._network = simpleQnet.build_model(nActions)
 
         # Parameters
@@ -94,3 +94,9 @@ class qNet(object):
             err += self._train_fn(preSt, postQ)
             batches += 1
         return err/batches
+
+    def save_net_model(self):
+        params = lasagne.layers.get_all_param_values(
+                self._outputLayer)
+        np.save("network_model_W", params)
+

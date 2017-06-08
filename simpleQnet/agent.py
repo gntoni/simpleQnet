@@ -2,6 +2,7 @@
 
 import numpy as np
 import scipy
+from theano import config
 
 from modelZoo import simpleQnet
 from simpleQnet.network import qNet
@@ -57,7 +58,7 @@ class agent(object):
 
                 preSt = self.memory.copy()
 
-                q_pred = self._network.forward_pass(np.expand_dims(preSt, 0))
+                q_pred = self._network.forward_pass(np.expand_dims(preSt, 0).astype(config.floatX))
 
                 # exploration vs explotation
                 # ---- Probability 1/i_episode of exploring
