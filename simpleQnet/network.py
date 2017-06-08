@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 class qNet(object):
     def __init__(self, nActions):
-        self._target_var = T.matrix('targets',dtype=theano.config.floatX)
+        self._target_var = T.matrix('targets', dtype=theano.config.floatX)
         self._network = simpleQnet.build_model(nActions)
 
         # Parameters
@@ -76,7 +76,7 @@ class qNet(object):
             #
             qTargets = preQ.copy()
             # clip rewards
-            # rewards = np.clip(rewards, self.min_reward, self.max_reward)
+            rewards = np.clip(rewards, -1, +1)  # TODO parametrizar
 
             # Update Q values for the actions taken
             for i, action in enumerate(actions):
