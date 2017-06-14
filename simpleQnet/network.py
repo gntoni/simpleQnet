@@ -44,7 +44,8 @@ class qNet(object):
         self._params = lasagne.layers.get_all_params(
                             self._outputLayer,
                             trainable=True)
-        self._updates = lasagne.updates.adamax(
+
+        self._updates = lasagne.updates.rmsprop(
                             self._loss,
                             self._params)
 
