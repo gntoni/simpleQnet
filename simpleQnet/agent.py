@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-import scipy
+import scipy.misc
 from theano import config
 
 from simpleQnet.network import qNet
@@ -11,6 +11,14 @@ def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
     return gray
+
+
+def resize_and_crop(img):
+    img = rgb2gray(img)
+    img = scipy.misc.imresize(
+                                        img,
+                                        (110, 84))
+    return img[84:, :]
 
 
 class agent(object):
@@ -30,9 +38,7 @@ class agent(object):
         self._env.restart()
         for i in range(self.memory_len):
             self._env.make_action(np.random.randint(self._env.nActions))
-            self.memory[i] = scipy.misc.imresize(
-                                        rgb2gray(self._env.get_observation()),
-                                        (self.imH, self.imW))
+            self.memory[i] = resize_and_crop(self._env.get_observation())
 
     def load_data(self):
         pass
@@ -71,9 +77,7 @@ class agent(object):
             reward = self._env.make_action(action)
             terminal = self._env.terminated
             self.memory[:-1] = self.memory[1:]
-            self.memory[-1] = scipy.misc.imresize(
-                                        rgb2gray(self._env.get_observation()),
-                                        (self.imH, self.imW))
+            self.memory[-1] = resize_and_crop(self._env.get_observation())
             posSt = self.memory.copy()
 
             if save:

@@ -28,7 +28,7 @@ class qNet(object):
         self._test_prediction = lasagne.layers.get_output(
                                         self._outputLayer,
                                         deterministic=True)
-
+        self._meanG = self._prediction.mean()
         # Forward pass Function
         self.forward_pass = theano.function(
             [self._inputLayer.input_var],
@@ -51,11 +51,12 @@ class qNet(object):
 
         self._train_fn = theano.function(
                 [self._inputLayer.input_var, self._target_var],
-                self._loss,
+                [self._loss, self._meanG],
                 updates=self._updates)
 
     def train_epoch(self, batch, batchsize):
         err = 0
+        meanG = 0
         batches = 0
         for start_idx in tqdm(range(0, len(batch) - batchsize + 1, batchsize)):
             minibatch = batch[start_idx:start_idx + batchsize]
@@ -92,9 +93,11 @@ class qNet(object):
             #          - calculate updates
             #          - update
 
-            err += self._train_fn(preSt, postQ)
+            berr, bmeanG = self._train_fn(preSt, postQ)
+            err += berr
+            meanG += bmeanG
             batches += 1
-        return err/batches
+        return (err/batches, meanG/batches)
 
     def save_net_model(self):
         params = lasagne.layers.get_all_param_values(
