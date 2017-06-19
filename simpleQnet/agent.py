@@ -18,7 +18,7 @@ def resize_and_crop(img):
     img = scipy.misc.imresize(
                                         img,
                                         (110, 84))
-    return img[84:, :]
+    return img[26:, :]
 
 
 class agent(object):

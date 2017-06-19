@@ -104,3 +104,5 @@ class qNet(object):
                 self._outputLayer)
         np.save("network_model_W", params)
 
+    def load_net_model(self, model):
+        lasagne.layers.set_all_param_values(self._outputLayer, model)

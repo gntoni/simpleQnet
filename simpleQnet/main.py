@@ -19,12 +19,14 @@ while len(records) < iterations:
 
 print "Start Training"
 n_actions_done = 1
-plt.axis()
+errAx = plt.subplot(211)
+gAx = plt.subplot(212)
 plt.ion()
 plt.ylabel("G value mean")
 plt.xlabel("iteration")
 
 Gmeans = [0]
+errors = [0]
 for i in range(iterations):
     print "iteration: " + str(i)
     print "- playing"
@@ -42,8 +44,11 @@ for i in range(iterations):
     error, Gmean = ag.train(samples, len(samples))
 
     Gmeans.append(Gmean)
-    plt.cla()
-    plt.plot(Gmeans)
+    errors.append(error)
+    errAx.cla()
+    gAx.cla()
+    errAx.plot(errors)
+    gAx.plot(Gmeans)
     plt.pause(0.001)
     print error
     if not n_actions_done % 1000:
